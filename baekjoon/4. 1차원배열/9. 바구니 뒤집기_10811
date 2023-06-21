@@ -1,0 +1,9 @@
+ b = map(int,input().split()) #a=정수개수, b=역순 횟수
+c=[input() for i in range(b)] #역순 취할 인덱스 모음
+n=[i for i in range(1,a+1)] #1~a까지의 정수
+
+
+for i in c:
+    
+     j=list(map(int,i.split(" ")))
+        n.insert(j[0]-1, n.index(j[1]-1)) # 맨 뒤에 숫자를 앞으로 insert하기. insert는 n[]+1에 함. 마지막 인덱스가 같아질때까지. 여기서 막힘....
