@@ -1,0 +1,9 @@
+a=list(map(int, input().split()))#정수 개수와 기준값x입력
+b=list(map(int, input().split()))#정수 입력
+
+list=[]
+
+for i in b :
+    if i<a[1]:
+        list.append(i)
+print(list)
