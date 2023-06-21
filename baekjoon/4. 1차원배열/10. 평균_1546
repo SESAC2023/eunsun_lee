@@ -1,0 +1,7 @@
+a=int(input())#시험 개수
+b=list(map(int,input().split()))#성적
+c=[i/max(b)*100 for i in b]
+s=0
+for i in c:
+   s=s+i 
+print(s/a)
