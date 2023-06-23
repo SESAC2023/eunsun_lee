@@ -1,0 +1,15 @@
+"""런타임 에러 코드1.
+
+s=0
+while True:
+    a=input()
+    s=s+1
+    print(a)
+    if s==100 :
+      break
+      
+런타임 에러 코드2
+
+for i in rnage(99) :
+    print(input())
+"""
