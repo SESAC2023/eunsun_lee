@@ -32,3 +32,21 @@ for i in range(b): # b번 반복해서 입력받고 입력받은 대로 순서 �
 #리스트 벗기기
 for i in n :
     print(i,end=" ")
+
+
+
+"""두번째 솔루션
+
+for i in range(m):
+    left, right = map(int, input().split())
+    left -= 1
+    temp = []
+    for j in range(left, right):
+        temp.append(arr[j])
+    for j in range(left, right):
+        arr[j] = temp.pop()
+
+for x in arr:
+    print(x, end=" ")
+
+"""
