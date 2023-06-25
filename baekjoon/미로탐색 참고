@@ -1,0 +1,34 @@
+import sys
+from collections import deque
+sys.setrecursionlimit(int(1e6)) #재귀함수 1000번이상 되면 오류. 여기에선 재귀함수 안쓰니까 필요 없으나 탬플릿으로 사용하는 게 좋음.
+input = sys.stdin.readline #빠른 입력
+
+a,b =map(int,input().split())
+graph = []
+for i in range(a):
+    line = input().strip()
+    current = []
+    for x in line:
+        current.append(int(x))
+    graph.append(current)
+#print(graph)
+visited = [[False] * b for i in range(a)]
+#print(visited)
+distance     #distance 만들기
+def bfs(x,y):
+    q = deque()
+    q.append(x,y)
+    while q:
+        x,y=q.popleft()
+        for i in range(4) : #4가지 방향을 보는 것
+            nx=x+dx[i]
+            ny=y+dy[i]
+            if nx<0 or nx>=n or ny < 0 or ny >=m:
+                continue
+            if graph[nx][ny] == 0 :
+                continue
+            if graph[nx][ny] == 1:
+                graph[nx][ny] =graph[x][y]+1
+                q.append((nx, ny))
+                distance[ny][ny]=distace[x][y] +1 #탐색은 가장 가까운 거부터 하기 때문에 전 위치에서 +1을 하는 게 최단거리임.
+  return graph[a-1][b-1]
