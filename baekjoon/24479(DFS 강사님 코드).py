@@ -72,16 +72,18 @@ def dfs(x): #x는 노드
                       #   def 한번 돈 결과 1번 다음 2번 방문함. 2번도 true로 바뀜. visited=[ False, True, True, False, False, False]
     # print(x) # 현재 방문한 노드를 출력, 1이 출력됨. 
     answer[x] = order  # [핵심] 노드를 방문한 "순서"를 기록. answer=[0 1 0 0 0 0] 이렇게 바뀜
-    order += 1 
+    order += 1  #반복횟수가 곧 방문순서. 따라서 한번 반복할 때마다 1씩 증가하여 방문 순서를 나타냄. Q 윗줄의 order변수가 처음 나왔는데, 그 위에다 order=0 안 해줘도 되나?
     # 현재 노드(x)의 인접 노드를 확인하며
     for y in graph[x]:
-        # 인접 노드인 y가 아직 방문하지 않은 노드라면
+        # 인접 노드인 y가 아직 방문하지 않은 노드라면 1번 노드의 인접 노드들이 graph[1]에 리스트로 저장되어 있음. 1번 방문 후 다음 방문할 곳이 5번이라면 
+        #  5번은 graph[1]안에 있을 것이고 아직 방문 전이기 때문에 visited[5]= false임. 따라서 2번으로 def 함수가 다시 실행. 방문처리 후 oder +1.
+        #  만약 graph[5]=[1] 뿐이라면 이미 1번은 방문했기 때문에 def 함수는 종료.
         if not visited[y]:
             dfs(y)
 
 
 order = 1
-dfs(r)
+dfs(r) #위에 정의된 함수대로 실행. r은 시작노드
 
 for i in range(1, n + 1):
     print(answer[i])
