@@ -71,7 +71,7 @@ def dfs(x): #x는 노드
     visited[x] = True #예)1번을 호출 했을 때 true로 바꿔줌 visited=[ False, True, False, False, False, False]
                       #   def 한번 돈 결과 1번 다음 2번 방문함. 2번도 true로 바뀜. visited=[ False, True, True, False, False, False]
     # print(x) # 현재 방문한 노드를 출력, 1이 출력됨. 
-    answer[x] = order  # [핵심] 노드를 방문한 "순서"를 기록
+    answer[x] = order  # [핵심] 노드를 방문한 "순서"를 기록. answer=[0 1 0 0 0 0] 이렇게 바뀜
     order += 1 
     # 현재 노드(x)의 인접 노드를 확인하며
     for y in graph[x]:
