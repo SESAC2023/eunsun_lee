@@ -26,6 +26,7 @@ for i in range(m):
 
 for i in range(1, n + 1):
     graph[i].sort() # 오름차순 방문
+                    #여기까진 dfs와 동일
 
 # 시작할 때
 q = deque()  # 큐를 생성
@@ -36,17 +37,17 @@ answer = [0] * (n + 1)  # 각 노드를 방문한 순서
 order = 1
 
 # 큐가 빌 때까지 반복
-while q:
-    # 매번 큐에서 원소 꺼내기
+while q:           # 빈칸 즉 0은 false 이므로 원소를 모두 빼서 빈 큐가 되면 while문 종료.
+    # 매번 큐에서 원소 꺼내기. 선입선출이므로 왼쪽에서부터 빼야 함.
     x = q.popleft()
     answer[x] = order  # 순서 기입
     order += 1
     # 인접한 노드 확인하기
-    for y in graph[x]:
-        # 방문하지 않았다면
+    for y in graph[x]: 
+        # 방문하지 않았다면 방문처리하고 인접노드를 큐에 모두 삽입. for 문으로 인해 모든 원소가 들어가게 됨.
         if not visited[y]:
             visited[y] = True
-            q.append(y)
+            q.append(y)          #방문 안 한 인접노드 모두 삽입. 인접노드가 모드 방문처리 됐다면 삽입없이 꺼내기만 수행->바로 다음으로 반목.
 
 for i in range(1, n + 1):
     print(answer[i])bsb
