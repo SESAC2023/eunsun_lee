@@ -34,7 +34,7 @@ b=set(map(int, input().split())) #비교군 카드에 적힌 정수, -천만~천
 
 x=[0 for i in range(m)] #비교군 카드의 소유 확인
 
-c=list(b-(b-a)) #있는 카드 리스트
+c=list(b&a)) #있는 카드 리스트
 b=list(b)
 for i  in c :
     
