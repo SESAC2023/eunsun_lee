@@ -1,0 +1,15 @@
+import sys
+sys.setrecursionlimit(int(1e6))
+input = sys.stdin.readline
+
+a,b,c=map(int,input().split())
+
+smallers=sum([a,b,c])-max([a,b,c]) #짧은 막대 두 길이의 합
+max_v=max([a,b,c])                  #가장 긴 막대의 길이
+
+if max([a,b,c])<smallers : #삼각형의 조건에 부합하면 합 그대로 출력
+    print(sum([a,b,c]))
+
+else :                     #가장 긴 막대는 작은것들의 합보다 1만큼 작으면 됨
+    max_v=smallers-1
+    print(max_v+smallers)
