@@ -13,7 +13,7 @@ for i in range(3):
 if s==180 :
     if an[0]==60 and an[1]==60:
         print('Equilateral')
-    elif an[0]==an[1] or an[0]==an[2] :
+    elif an[0]==an[1] or an[0]==an[2] or an[1]==an[2] :
         print('Isosceles')
     else :
         print('Scalene')
