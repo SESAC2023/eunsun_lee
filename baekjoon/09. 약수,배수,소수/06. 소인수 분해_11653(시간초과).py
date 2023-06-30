@@ -19,7 +19,7 @@ for i in range(1, n//2):
     temp.clear()
   
 #x.sort()
-print(x)
+#print(x)
 
 d=[]
 
