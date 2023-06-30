@@ -5,6 +5,24 @@ input = sys.stdin.readline
 
 n=int(input())  
 
+i=1
+
+while n != 1 :
+    i+=1
+    while n%i==0:
+        n=n//i
+        print(i)
+          
+
+"""시간초과1
+
+import sys
+import math
+sys.setrecursionlimit(int(1e6))
+input = sys.stdin.readline
+
+n=int(input())  
+
 temp=[] #약수
 x=[] #소수 리스트
 s=0
@@ -30,9 +48,11 @@ for i in x :
         
 for i in d :
     print(i, end=' ')
+"""
 
+"""시간초과2
 
-"""import sys
+import sys
 input = sys.stdin.readline
 
 n=int(input())
