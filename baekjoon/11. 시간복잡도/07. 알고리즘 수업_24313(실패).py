@@ -8,26 +8,19 @@ input = sys.stdin.readline
 #f(n), c, n0가 O(n) 정의를 만족하면 1, 아니면 0을 출력한다.
 a1,a0 =map(int,input().split()) 
 c=int(input())
-n0=int(input())
-n=100
+n0=int(input()) #n0은 100 이하의 자연수
+n=n0  
 
 temp=0
-while n>=n0  :
-    n-=1
-    f=a1*n + a0
-    g=n
-    if a1*n+a0<=c*n:
-        if temp==0 :
-            temp+=1
-        else : 
-            continue
-    else :
-      
-        break
+n+=1
+f=a1*n + a0
+g=n
+if a1*n+a0<=c*n:
 
-print(temp)
+    temp+=1
 
-if n==1 :
-   print(a1*n+a0<=c*n)
-        
+else :
+    temp=0
     
+
+print(temp) 
