@@ -28,25 +28,20 @@ for i in com :
 #각 팀의 능력치 구하기
 ab=[]
 ab2=[]
-for i in range(int(len(com))) :
-      com2=[]
-      com2 = combinations(com[i] , 2) #한팀씩 소환하여 각각의 능력치 구함.
-      ability=0
 
-      for x, y in com2 :
-          ability += array[x-1][y-1]+array[y-1][x-1]
-      ab.append(ability)
-
-for i in range(int(len(opposite))) :
-      opposite2=[]
-      opposite2 = combinations(opposite[i] , 2) #한팀씩 소환하여 각각의 능력치 구함.
-      ability2=0
-
-      for x, y in opposite2 :
-          ability2 += array[x-1][y-1]+array[y-1][x-1]
-      ab2.append(ability2)
+def abil(list, out):
+    for i in range(int(len(list))) :
+          com2=[]
+          com2 = combinations(list[i] , 2) #한팀씩 소환하여 각각의 능력치 구함.
+          ability=0
+    
+          for x, y in com2 :
+              ability += array[x-1][y-1]+array[y-1][x-1]
+          out.append(ability)
+    return 
       
-
+abil(com,ab)
+abil(opposite,ab2)
 #print( ab, ab2)
 
 min_v=10e9
