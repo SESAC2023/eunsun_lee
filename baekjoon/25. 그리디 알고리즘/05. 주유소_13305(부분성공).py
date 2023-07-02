@@ -12,8 +12,6 @@ s=0
 
 min_v = min(price)
 
-#if min_v == price[-1]:
-#      price.pop()
 
 while price : #최소값 이후로는 모드 최저가로 주유. 최소값포함 오른쪽을 모두 삭제한 후 반복
     min_v = min(price)
