@@ -1,3 +1,34 @@
+"""58점짜리"""
+import sys
+
+sys.setrecursionlimit(int(1e6))
+input = sys.stdin.readline
+
+n=int(input())
+line=list(map(int, input().split()))
+price=list(map(int, input().split()))
+
+s=0
+
+min_v = min(price)
+
+#if min_v == price[-1]:
+#      price.pop()
+
+while price : #최소값 이후로는 모드 최저가로 주유. 최소값포함 오른쪽을 모두 삭제한 후 반복
+    min_v = min(price)
+    min_ind = price.index(min_v)
+    distance = sum(line[min_ind:]) #최소값 이후의 거리의 합. 
+    
+    s += min_v * distance
+    del line[min_ind :]
+    del price[min_ind :]
+  
+print(s)
+
+
+"""17점짜리
+
 import sys
 
 sys.setrecursionlimit(int(1e6))
@@ -29,3 +60,4 @@ for i in price[1:] :
         
    
 print(s)
+"""
