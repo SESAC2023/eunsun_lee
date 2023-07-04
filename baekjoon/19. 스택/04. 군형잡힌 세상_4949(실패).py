@@ -4,6 +4,64 @@ import sys
 sys.setrecursionlimit(int(1e6))
 input = sys.stdin.readline
 
+array=[]
+def br(y) :
+    array = []
+    for i in y:
+        if i == '('  :
+            array.append(i)
+        if i == '{' :
+            array.append(i)
+        if i == '[' :
+            array.append(i)
+
+        if i == ')' and array == []:
+            array.append(0) 
+            break
+        if i ==  '}' and array == []:
+            array.append(0) 
+            break
+        if i ==  ']' and array == []:
+            array.append(0) 
+            break
+
+      
+        else :  
+            if i==")" and array[-1]=='(' : 
+                array.pop()
+            elif i=="}" and array[-1]=='{' : 
+                array.pop()
+            elif i=="]" and array[-1]=='[' : 
+                array.pop()
+            else :
+                array.append(0)
+                break
+              
+    if 0 in array :
+        print('no')
+    elif len(array)==0:
+        print('yes')
+    else:
+        print('no')
+
+while True:
+    temp = []
+    a = input().rstrip()
+    if a == ".":
+        break
+    for i in a :
+        if i == ('(' or ')' or '{' or '}' or '[' or ']') :
+            temp.append(i)
+    
+    br(temp)
+
+
+"""
+import sys
+
+sys.setrecursionlimit(int(1e6))
+input = sys.stdin.readline
+
 array = []
 while True:
   y = input()
@@ -33,7 +91,7 @@ while True:
       print('yes')
   else:
       print('no')
-
+"""
 
 """ 아래의 코드는 (([))]  와 같은 사례를 구분하지 못함.
 while True:
