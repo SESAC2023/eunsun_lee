@@ -13,7 +13,8 @@ for i in range(n) :
         temp.append(j)
     array.append(temp)
 
-visited=[[False]*n]*n
+visited=[[False]*n for i in range(n)]
+
 #상 하 좌 우
 dx = [-1, 1, 0, 0]
 dy = [0, 0, -1, 1]
@@ -29,7 +30,7 @@ def dfs(x,y) :
 
         if nx < 0 or ny <0 or nx>=n or ny >= n :
             continue
-        if array[i][j] == 0 :
+        if array[nx][ny] == 0 :
             continue
         if not visited[nx][ny] :
             dfs(nx, ny)
@@ -47,5 +48,5 @@ for i in range(n) :
 
 print(an)
 answer.sort()
-for i in answer :
-    print(i)
+for x in answer :
+    print(x)
