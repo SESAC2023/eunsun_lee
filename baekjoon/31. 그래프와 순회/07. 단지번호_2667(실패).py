@@ -10,7 +10,7 @@ for i in range(n) :
     temp=[]
     a=input().strip()
     for j in a :
-        temp.append(j)
+        temp.append(int(j))
     array.append(temp)
 
 visited=[[False]*n for i in range(n)]
