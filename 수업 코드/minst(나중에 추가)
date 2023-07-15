@@ -1,0 +1,245 @@
+#800개 넘으니 gpu 서야 함. 따라서 런타임에서 설정하기
+
+import torch # 아래의 설정들도 다 포함하지만 이게 템플릿처럼 다른 것들도 다 불러오나 봄, ()
+import torch.nn as nn #뉴런네트워크의 약자이자 그 자체임. 다닝ㄹ 레이어부터 모든 레이어까지
+import torch.optim as optim #
+import torch.nn.functional as F
+
+from torchvision import datasets, transforms
+     # 데이터 셋에는 기본적인 , 가벼운 데이터 세트는 불러올 수 있음. mnist, cifar-10등 유명한 데이터 세트 가지고 있음.이미지넷 같은 거는 무거워서 제공 안함
+     #데이터 로더 - 배치사이드 만큼 쪼개줌. 모델 실제 학습은 gpu가 하지만 다 학습해서 한번에 업데이트 하기 어려우이까 배치사이즈만큼 불러옴.
+
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu") # GPU 객체 선언
+     #엔비디아 gpu는 쿠다라는 프로그램에서 함. cuda()는 모든 것. cuda(0) 코랩은 하나의 gpu 제공함. 그게 0번. 
+     #0번을 쓸 때는 쓰고 아니면 cpu를 쓰겠다.즉, 0번 gpu로 보내겠다는 의미.
+
+# MNIST 데이터 셋 불러오기 - 엠니스트는 이미 28*28로 맞춰져 있음. 다른 걸 쓸땐 이거 사이즈 맞춰줘야 함.
+#정의된 데이터 불러옴.
+#트랜스폼은 파이토치를 텐서로 바꾸는 역할.그 외 다른 설명은 복습할 때 더 찾아야함. 놓침.
+#transforms.ToTensor() : [0, 255] => [0, 1]로 바꾸는 것.
+  # 값만 스케일링 하는 거고 정규화 하면 더 학습이 잘 됨.
+#모든 데이터는 평균 0이고 분산 1로 맞춤(정규화) - 더 학습이 잘 됨.
+train_dataset = datasets.MNIST(root='./mnist_data/', train=True, transform=transforms.ToTensor(), download=True)
+test_dataset = datasets.MNIST(root='./mnist_data/', train=False, transform=transforms.ToTensor())
+
+batch_size = 64 # 배치 사이즈 설정
+#로드를 하면 64임.
+#에폭은 모든 데이터를 중복없이 한번씩 한 묶음을 보는 것. 에폭 한 번 다끝나고 나면 셔플해서 순서 바꿔줌. 케이폴드가 뭐지? 찾아보기.
+#셔플 : 데이터 순서를 바꿔 줌. 딥러닝은 똑똑해서 답을 외우거나 쉬운 답을 찾음. 따라서 셔플 해주는 거고. 이를 degeneration solution
+#
+train_loader = torch.utils.data.DataLoader(dataset=train_dataset, batch_size=batch_size, shuffle=True)
+test_loader = torch.utils.data.DataLoader(dataset=test_dataset, batch_size=batch_size, shuffle=False)
+     
+
+# 임의의 이미지 분류 딥 뉴럴 네트워크 선언
+class Net(nn.Module):
+    def __init__(self):
+        super(Net, self).__init__()  # 가중치, 또는 자주 사용하는 함수 등. 바뀌는 값.
+        self.l1 = nn.Linear(784, 480) # 입력 크기: 784 차원(픽셀). 480은 잘 되는 것으로 메모 등 학습시간 등으로 최적의 숫자를 찾아야 함. 481이 되면 파라미터가 784이 더 증가.
+        self.l2 = nn.Linear(480, 200)  # 2, 3 없더라도 이론적으로는 가능. 하나이상의 히든 그거 . 그래도 깊은 게 성능은 더 좋음.480은 앞의 거에 480자리와 꼭 숫자를 맞춰야 함.
+        self.l3 = nn.Linear(200, 80)
+        self.l4 = nn.Linear(80, 10) # 10개로 분류 (출력층)
+
+    def forward(self, x): #입력이 들어왔을 떄 어떻게 출려할것인가.
+        x = x.view(-1, 784)  # (배치 사이즈, 1, 28, 28) 크기의 데이터를 (배치 사이즈, 784) 형태로 변경. 따라서 4차원. 784로 나눈 것의 나머지가 -1인 값. 이건 닷 찾아보기 이해 안 됨.
+        x = F.relu(self.l1(x))
+        x = F.relu(self.l2(x))
+        x = F.relu(self.l3(x))
+        return self.l4(x)
+     
+
+model = Net().to(device)
+print(model)
+     
+Net(
+  (l1): Linear(in_features=784, out_features=480, bias=True)
+  (l2): Linear(in_features=480, out_features=200, bias=True)
+  (l3): Linear(in_features=200, out_features=80, bias=True)
+  (l4): Linear(in_features=80, out_features=10, bias=True)
+)
+
+criterion = nn.CrossEntropyLoss() # 손실 함수 설정
+optimizer = optim.SGD(model.parameters(), lr=0.01, momentum=0.2) # 최적화 함수
+
+def train(epoch):
+    model.train()
+    for batch_idx, (data, target) in enumerate(train_loader): #그냥 문법. 자동으로 하나씩 불러옴.
+        data, target = data.to(device), target.to(device)
+        optimizer.zero_grad()
+        output = model(data)
+        loss = criterion(output, target)
+        loss.backward()
+        optimizer.step() # 모델 가중치 업데이트
+        if batch_idx % 100 == 0:
+            print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.8f}'.format(
+                epoch, batch_idx * len(data), len(train_loader.dataset),
+                100. * batch_idx / len(train_loader), loss.data)) #{:.0f%} 는 소수점 없이 나타내겠따.
+     
+
+def test(): #학습을 안 시키니까 옵티마이저 안 하고, 백워드 안 함.
+    model.eval()
+    loss = 0
+    correct = 0
+    for data, target in test_loader:
+        data, target = data.to(device), target.to(device)
+        output = model(data)
+        loss += criterion(output, target).data.item() #output =[ , 10] 10은 클래스
+        pred = output.data.max(1, keepdim=True)[1]   #max(axis=1, )
+        correct += pred.eq(target.data.view_as(pred)).cpu().sum()
+    loss /= len(test_loader.dataset)
+    print('\nTest set: Average loss: {:.4f}, Accuracy: {}/{} ({:.0f}%)\n'.format(
+        loss, correct, len(test_loader.dataset),
+        100. * correct / len(test_loader.dataset)))
+     
+
+for epoch in range(1, 11):
+    train(epoch)
+    test()
+     
+Train Epoch: 1 [0/60000 (0%)]	Loss: 2.29973841
+Train Epoch: 1 [6400/60000 (11%)]	Loss: 2.30202866
+Train Epoch: 1 [12800/60000 (21%)]	Loss: 2.28362989
+Train Epoch: 1 [19200/60000 (32%)]	Loss: 2.26434207
+Train Epoch: 1 [25600/60000 (43%)]	Loss: 2.24318957
+Train Epoch: 1 [32000/60000 (53%)]	Loss: 2.20229530
+Train Epoch: 1 [38400/60000 (64%)]	Loss: 2.13752699
+Train Epoch: 1 [44800/60000 (75%)]	Loss: 1.97874355
+Train Epoch: 1 [51200/60000 (85%)]	Loss: 1.71705973
+Train Epoch: 1 [57600/60000 (96%)]	Loss: 1.46533930
+
+Test set: Average loss: 0.0192, Accuracy: 6894/10000 (69%)
+
+Train Epoch: 2 [0/60000 (0%)]	Loss: 1.09499383
+Train Epoch: 2 [6400/60000 (11%)]	Loss: 0.90491831
+Train Epoch: 2 [12800/60000 (21%)]	Loss: 0.98894066
+Train Epoch: 2 [19200/60000 (32%)]	Loss: 0.62206197
+Train Epoch: 2 [25600/60000 (43%)]	Loss: 0.58444732
+Train Epoch: 2 [32000/60000 (53%)]	Loss: 0.41077390
+Train Epoch: 2 [38400/60000 (64%)]	Loss: 0.67227507
+Train Epoch: 2 [44800/60000 (75%)]	Loss: 0.50685823
+Train Epoch: 2 [51200/60000 (85%)]	Loss: 0.45321539
+Train Epoch: 2 [57600/60000 (96%)]	Loss: 0.57340497
+
+Test set: Average loss: 0.0070, Accuracy: 8714/10000 (87%)
+
+Train Epoch: 3 [0/60000 (0%)]	Loss: 0.47672641
+Train Epoch: 3 [6400/60000 (11%)]	Loss: 0.36490798
+Train Epoch: 3 [12800/60000 (21%)]	Loss: 0.51761222
+Train Epoch: 3 [19200/60000 (32%)]	Loss: 0.42377043
+Train Epoch: 3 [25600/60000 (43%)]	Loss: 0.34483901
+Train Epoch: 3 [32000/60000 (53%)]	Loss: 0.41745582
+Train Epoch: 3 [38400/60000 (64%)]	Loss: 0.43669343
+Train Epoch: 3 [44800/60000 (75%)]	Loss: 0.62508625
+Train Epoch: 3 [51200/60000 (85%)]	Loss: 0.39678991
+Train Epoch: 3 [57600/60000 (96%)]	Loss: 0.44428077
+
+Test set: Average loss: 0.0055, Accuracy: 8937/10000 (89%)
+
+Train Epoch: 4 [0/60000 (0%)]	Loss: 0.26219860
+Train Epoch: 4 [6400/60000 (11%)]	Loss: 0.35712850
+Train Epoch: 4 [12800/60000 (21%)]	Loss: 0.43690401
+Train Epoch: 4 [19200/60000 (32%)]	Loss: 0.45992917
+Train Epoch: 4 [25600/60000 (43%)]	Loss: 0.22395371
+Train Epoch: 4 [32000/60000 (53%)]	Loss: 0.26992360
+Train Epoch: 4 [38400/60000 (64%)]	Loss: 0.32383415
+Train Epoch: 4 [44800/60000 (75%)]	Loss: 0.29488501
+Train Epoch: 4 [51200/60000 (85%)]	Loss: 0.35318545
+Train Epoch: 4 [57600/60000 (96%)]	Loss: 0.38152912
+
+Test set: Average loss: 0.0049, Accuracy: 9073/10000 (91%)
+
+Train Epoch: 5 [0/60000 (0%)]	Loss: 0.34155259
+Train Epoch: 5 [6400/60000 (11%)]	Loss: 0.40807134
+Train Epoch: 5 [12800/60000 (21%)]	Loss: 0.30143169
+Train Epoch: 5 [19200/60000 (32%)]	Loss: 0.33902788
+Train Epoch: 5 [25600/60000 (43%)]	Loss: 0.23149955
+Train Epoch: 5 [32000/60000 (53%)]	Loss: 0.35203907
+Train Epoch: 5 [38400/60000 (64%)]	Loss: 0.18336138
+Train Epoch: 5 [44800/60000 (75%)]	Loss: 0.13821264
+Train Epoch: 5 [51200/60000 (85%)]	Loss: 0.38005486
+Train Epoch: 5 [57600/60000 (96%)]	Loss: 0.39012006
+
+Test set: Average loss: 0.0041, Accuracy: 9236/10000 (92%)
+
+Train Epoch: 6 [0/60000 (0%)]	Loss: 0.24993780
+Train Epoch: 6 [6400/60000 (11%)]	Loss: 0.26940361
+Train Epoch: 6 [12800/60000 (21%)]	Loss: 0.08142281
+Train Epoch: 6 [19200/60000 (32%)]	Loss: 0.15988955
+Train Epoch: 6 [25600/60000 (43%)]	Loss: 0.18102130
+Train Epoch: 6 [32000/60000 (53%)]	Loss: 0.27507901
+Train Epoch: 6 [38400/60000 (64%)]	Loss: 0.20094967
+Train Epoch: 6 [44800/60000 (75%)]	Loss: 0.13680774
+Train Epoch: 6 [51200/60000 (85%)]	Loss: 0.17475218
+Train Epoch: 6 [57600/60000 (96%)]	Loss: 0.24743187
+
+Test set: Average loss: 0.0035, Accuracy: 9347/10000 (93%)
+
+Train Epoch: 7 [0/60000 (0%)]	Loss: 0.22317824
+Train Epoch: 7 [6400/60000 (11%)]	Loss: 0.17254603
+Train Epoch: 7 [12800/60000 (21%)]	Loss: 0.29148030
+Train Epoch: 7 [19200/60000 (32%)]	Loss: 0.21171156
+Train Epoch: 7 [25600/60000 (43%)]	Loss: 0.16588198
+Train Epoch: 7 [32000/60000 (53%)]	Loss: 0.17398901
+Train Epoch: 7 [38400/60000 (64%)]	Loss: 0.12150305
+Train Epoch: 7 [44800/60000 (75%)]	Loss: 0.09210128
+Train Epoch: 7 [51200/60000 (85%)]	Loss: 0.10203900
+Train Epoch: 7 [57600/60000 (96%)]	Loss: 0.21484584
+
+Test set: Average loss: 0.0032, Accuracy: 9399/10000 (94%)
+
+Train Epoch: 8 [0/60000 (0%)]	Loss: 0.20830709
+Train Epoch: 8 [6400/60000 (11%)]	Loss: 0.17629351
+Train Epoch: 8 [12800/60000 (21%)]	Loss: 0.20370726
+Train Epoch: 8 [19200/60000 (32%)]	Loss: 0.27614355
+Train Epoch: 8 [25600/60000 (43%)]	Loss: 0.10683157
+Train Epoch: 8 [32000/60000 (53%)]	Loss: 0.15236372
+Train Epoch: 8 [38400/60000 (64%)]	Loss: 0.19275370
+Train Epoch: 8 [44800/60000 (75%)]	Loss: 0.24479827
+Train Epoch: 8 [51200/60000 (85%)]	Loss: 0.32506037
+Train Epoch: 8 [57600/60000 (96%)]	Loss: 0.10904197
+
+Test set: Average loss: 0.0028, Accuracy: 9479/10000 (95%)
+
+Train Epoch: 9 [0/60000 (0%)]	Loss: 0.17300749
+Train Epoch: 9 [6400/60000 (11%)]	Loss: 0.09649712
+Train Epoch: 9 [12800/60000 (21%)]	Loss: 0.11818295
+Train Epoch: 9 [19200/60000 (32%)]	Loss: 0.07012740
+Train Epoch: 9 [25600/60000 (43%)]	Loss: 0.19670245
+Train Epoch: 9 [32000/60000 (53%)]	Loss: 0.20147036
+Train Epoch: 9 [38400/60000 (64%)]	Loss: 0.21009645
+Train Epoch: 9 [44800/60000 (75%)]	Loss: 0.13933472
+Train Epoch: 9 [51200/60000 (85%)]	Loss: 0.20850025
+Train Epoch: 9 [57600/60000 (96%)]	Loss: 0.27678251
+
+Test set: Average loss: 0.0027, Accuracy: 9479/10000 (95%)
+
+Train Epoch: 10 [0/60000 (0%)]	Loss: 0.21618526
+Train Epoch: 10 [6400/60000 (11%)]	Loss: 0.17466922
+Train Epoch: 10 [12800/60000 (21%)]	Loss: 0.15113413
+Train Epoch: 10 [19200/60000 (32%)]	Loss: 0.41156551
+Train Epoch: 10 [25600/60000 (43%)]	Loss: 0.15017425
+Train Epoch: 10 [32000/60000 (53%)]	Loss: 0.24305400
+Train Epoch: 10 [38400/60000 (64%)]	Loss: 0.05643795
+Train Epoch: 10 [44800/60000 (75%)]	Loss: 0.21419187
+Train Epoch: 10 [51200/60000 (85%)]	Loss: 0.06198971
+Train Epoch: 10 [57600/60000 (96%)]	Loss: 0.16583478
+
+Test set: Average loss: 0.0024, Accuracy: 9543/10000 (95%)
+
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+image_data = test_dataset[0][0].to(device)
+image_label = test_dataset[0][1]
+print('숫자 이미지 X의 크기:', image_data.size())
+print('숫자 이미지 X의 레이블:', image_label)
+print(model(image_data))
+plt.imshow(image_data.cpu().numpy()[0], cmap='gray')
+     
+숫자 이미지 X의 크기: torch.Size([1, 28, 28])
+숫자 이미지 X의 레이블: 7
+tensor([[  1.2270,  -2.3440,   3.4852,   5.0390,  -5.9945,  -0.8671, -10.7527,
+          10.6472,  -0.4550,   1.7571]], device='cuda:0',
+       grad_fn=<AddmmBackward>)
+<matplotlib.image.AxesImage at 0x7fac93473898>
