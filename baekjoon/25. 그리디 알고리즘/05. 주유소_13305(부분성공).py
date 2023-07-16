@@ -1,3 +1,30 @@
+"""100점 """
+
+import sys
+
+sys.setrecursionlimit(int(1e6))
+input = sys.stdin.readline
+
+n=int(input())
+line=list(map(int, input().split()))
+price=list(map(int, input().split()))
+
+s=0
+
+min_v = price[0]
+#ind = int(0)
+
+for i in range(n-1): #최소값 이후로는 모드 최저가로 주유. 최소값포함 오른쪽을 모두 삭제한 후 반복
+#    print(line)
+ #   print(ind)
+    if price[i] < min_v :
+        min_v = price[i]
+    s += min_v*line[i]
+    #ind += 1
+    
+print(s)
+
+
 """58점짜리"""
 import sys
 
