@@ -2,8 +2,10 @@ import requests
 from bs4 import BeautifulSoup
 import pandas as pd
 
+data = []
+
 # 기사 목록 URL
-for i in range(1,10000) :
+for i in range(1,1000) :
     url = "https://www.hani.co.kr/arti/politics/list{}.html".format(i)
     #print(url)
 
@@ -20,7 +22,7 @@ for i in range(1,10000) :
     for article in articles:
         link = article.a["href"]
         article_links.append(link)
-    data = []
+
     # 각 기사의 내용 크롤링
     for link in article_links:
         # 기사 URL
@@ -42,19 +44,20 @@ for i in range(1,10000) :
 
         # 기사 내용
         content = article_soup.find("div", class_="text").text.strip()
+        # 기자 이름
         reporter = content.split("\n")[-1]
+        #데이터 리스트에 추가 하여 엑셀로 내보내기
+        data.append([title, date, content, reporter, article_links])
 
         # 결과 출력
-
     #    print("제목:", title)
      #   print("등록날짜:", date)
       #  print("기자명:", last_line)
        # print("내용:", content)
        # print("url:", article_url)
         #print("---------------")
-        data.append([title, date, content, reporter, article_links])
-df = pd.DataFrame(data)
-df.columns = ["title", "date", "content", "reporter", "article_links"]  # 컬럼 이름 지정
-# 엑셀 파일로 내보내기
-df.to_excel("articles.xlsx", index=False)
 
+df = pd.DataFrame(data, columns  = ["title", "date", "content", "reporter", "article_links"] )
+
+# 엑셀 파일로 내보내기
+df.to_excel("articles01.xlsx", index=False)
