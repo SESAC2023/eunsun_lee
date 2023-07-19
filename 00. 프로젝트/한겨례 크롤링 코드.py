@@ -47,7 +47,7 @@ for i in range(1,1000) :
         # 기자 이름
         reporter = content.split("\n")[-1]
         #데이터 리스트에 추가 하여 엑셀로 내보내기
-        data.append([title, date, content, reporter, article_links])
+        data.append([title, date, content, reporter, article_url])
 
         # 결과 출력
     #    print("제목:", title)
@@ -57,7 +57,7 @@ for i in range(1,1000) :
        # print("url:", article_url)
         #print("---------------")
 
-df = pd.DataFrame(data, columns  = ["title", "date", "content", "reporter", "article_links"] )
+df = pd.DataFrame(data, columns  = ["title", "date", "content", "reporter", "article_url"] )
 
 # 엑셀 파일로 내보내기
 df.to_excel("articles01.xlsx", index=False)
