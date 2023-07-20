@@ -5,8 +5,8 @@ import pandas as pd
 data = []
 
 # 기사 목록 URL
-for i in range(1,1000) :
-    url = "https://www.hani.co.kr/arti/politics/list{}.html".format(i)
+for i in range(1, 700) :
+    url = "https://www.hani.co.kr/arti/politics/administration/gallery{}.html".format(i)
     #print(url)
 
    # 페이지 요청
@@ -60,4 +60,4 @@ for i in range(1,1000) :
 df = pd.DataFrame(data, columns  = ["title", "date", "content", "reporter", "article_url"] )
 
 # 엑셀 파일로 내보내기
-df.to_excel("articles01.xlsx", index=False)
+df.to_csv("articles01.csv", index=False)
