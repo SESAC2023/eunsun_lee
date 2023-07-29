@@ -63,7 +63,6 @@ for i in range(1,46) :
 
     else :
         
-
 #div class = "inner"  id = "paging"    a href = "javascript:listData.load(1)" 
 
         #위의 구조에서 javascript 부분을 이용하여 페이지 순환
@@ -87,8 +86,9 @@ for i in range(1,46) :
             article_link.append(link)
 #print(article_link)
 
+#아예 다른 페이지. 이것 때문에 멈춤.
+article_link.remove('https://www.khan.co.kr/politics/assembly/article/202307190756001')
 
-import chardet
 
 # 각 기사의 내용 스크래핑
 headers = {
