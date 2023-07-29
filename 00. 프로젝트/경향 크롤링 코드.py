@@ -87,7 +87,7 @@ for i in range(1,46) :
 #print(article_link)
 
 #아예 다른 페이지. 이것 때문에 멈춤.
-article_link.remove('https://www.khan.co.kr/politics/assembly/article/202307190756001')
+article_link.remove('https://www.khan.co.kr/politics/politics-general/article/202307190600035')
 
 
 # 각 기사의 내용 스크래핑
