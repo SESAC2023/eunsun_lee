@@ -32,11 +32,11 @@ driver.get(url)
 wait = WebDriverWait(driver, 10)
 #wait.until(EC.presence_of_element_located((By.CLASS_NAME, 'df-list')))
 
-#셀레니움에서 태그 찾기   : 1. find_elements  2. 
+#셀레니움에서 태그 찾는 방법
 # 1. 1. find_elements : element는 가장 가까운 거 하나 elements는 전부
         #예시 : driver.find_elements(By.CSS_SELECTOR, 'div[class="text"]>a')  
 #2. Xpath : 셀레니움에서 경로를 이용해서 태그 찾는 방법. 정확히는 경로 표현 방법. 구성요소는 아래와 같음
-
+        #예시는 아래 코드 참조
 """
     //: 문서 전체에서 해당 요소를 찾습니다. 즉, 모든 자식과 자손 요소를 검색합니다.
     div: div 요소를 의미합니다.
