@@ -114,8 +114,10 @@ for link in article_link :
     
     #기사 내용  
     content = ""
-    contents = article_soup.find("div", class_="art_body").find_all("p", class_= "content_text text-l")
-    
+    contents = article_soup.find("div", class_="art_body", id = "articleBody").find_all("p", class_= "content_text text-l")
+        if contents == [] :
+            contents = article_soup.find("div", class_="art_body", id = "articleBody").find_all("p", class_= "content_text")
+                
     for i in contents :
         content += i.text + " "
     
