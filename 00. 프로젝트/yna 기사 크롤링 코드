@@ -54,7 +54,7 @@ for i in range(1, 12) :
                 
             # 기사 내용
             contents = article_soup.find("article", class_="story-news article")
-            contents1 = contents.select("p:not([class])")
+            contents1 = contents.select("p:not([class])")   #클라스가 없는 p만
             #print(contents1)
             #content = content1.find_all("p")
             content = ""
