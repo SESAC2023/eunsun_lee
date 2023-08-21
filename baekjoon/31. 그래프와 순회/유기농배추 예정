@@ -1,0 +1,12 @@
+from collections import deque
+import sys
+
+sys.setrecursionlimit(int(1e6))
+input = sys.stdin.readline
+
+tc =  int(input())
+
+for i in range(tc) :
+    m, n, k = map(int, input().split())
+
+    visited = [[0 for i in range(m)] for i in range(n)]
