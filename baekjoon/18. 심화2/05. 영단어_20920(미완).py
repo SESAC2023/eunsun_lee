@@ -16,24 +16,15 @@ for i in range(n) :
     a = input().strip()
     arr.append(a)
 
+d = dict()
 for i in arr : #m보다 짧은 단어 삭제
-    if len(i) < m :
-        arr.remove(i)
-#print(arr)
-arr.sort()
-print(arr)
-b=[]
-an=[]
-cnt= 0
-for i in range(1, len(arr)) :
-    if arr[i-1]==arr[i] :
-         cnt+=1 
-    else :
-         b.append(cnt)
-         cnt = 0
+    if len(i) >= m :
+        if i in d :
+            d[i] += 1
+        else :
+            d[i] = 1
 
-arr=set(arr)
-d=dict(zip(arr,b)) #단어와 횟수
-for i in range(1, len(arr)) :
-    len(arr[i-1]
+d = sorted(d.items(), key = lambda x : (-x[1], -len(x[0]), x[0]))
 
+for i in d :
+    print(i[0])
