@@ -1,0 +1,62 @@
+import sys
+sys.setrecursionlimit(int(1e6))
+input = sys.stdin.readline
+
+n= int(input())
+
+
+cnt =0
+
+def s(y) : # n = 3^k 일 때, k 구하기 ->k는 반복 횟수
+    global cnt
+    cnt += 1
+
+    if y //3 ==1 :
+        return cnt
+    else : return s(y//3)
+
+
+c = 0
+"""
+def star(star, end) : 
+    global c 
+    c += 1
+
+    if c == 1 :
+        return print("***"), print("* *"), print("***")
+    if c == k :
+        return
+    else :
+        return star(c, k)
+
+
+def star(k) :
+    if k == 1 :
+        return print("***"), print("* *"), print("***")
+  
+    else : 
+        print(star(c)*3)
+        print(star(c), star(c))
+        print(star(c)*3)
+        return """
+
+arr = [[],[],[]]
+
+def star(k) :
+    if k == 1 :
+      """
+        arr[0].append([1,1,1])
+        arr[1].append([1,0,1])
+        arr[2].append([1,1,1]) """
+        arr[0].append(["***"]
+        arr[1].append(["*",star(k-1)*0, ""*"])
+        arr[2].append(["***"])
+        return
+    else :
+        arr[0].append(star(k-1))
+        arr[1].append(star(k-1))
+        arr[2].append(star(k-1))
+    return star(k-1)
+arr1 = arr
+star(s(n))
+print(arr)
