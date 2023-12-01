@@ -23,3 +23,28 @@ for i in range(n) :
         
 for i in array :
     print(i, end=' ')
+
+#-----------------------------------------------
+import sys
+
+sys.setrecursionlimit(int(1e6))
+input = sys.stdin.readline
+
+n = int(input())
+num = list(map(int, input().split()))
+
+array = [-1] * n
+for i in range(n):
+  if i == n - 1:
+    array[-1] = -1
+    break
+  for j in num[i + 1:]:
+    if num[i] < j:
+      array[i] = j
+      break
+
+  if len(array) != i + 1:
+    array[-1] = -1
+
+for i in array:
+  print(i, end=' ')
