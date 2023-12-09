@@ -1,0 +1,33 @@
+tc = int(input())
+
+#우하좌상
+dc = (1, 0, -1, 0) # 좌우 이동
+dr = (0, 1, 0, -1) # 상하 이동
+
+for test_case in range(1, tc+1) :
+    r, c, d = 0, 0, 0
+
+    n = int(input())
+    l = [[0]*n for _ in range(n)]
+    l[0][0] = 1
+    for num in range(2, n**2+1) :
+
+        nc = c + dc[d]
+        nr = r + dr[d]
+
+        if nc >= n or nc < 0 or nr >= n or nr < 0 or l[nr][nc] != 0 :
+            d = (d+1) % 4
+            c, r = c + dc[d], r + dr[d]
+            l[r][c] = num 
+            #print(num, d)
+            #print(l)
+        else :
+            c, r = nc, nr
+            l[r][c] = num
+            #print(num, d)
+            #print(l)
+    print(f'#{test_case}')
+    for i in l :
+        for j in i :
+            print(j, end =" ")
+        print()
