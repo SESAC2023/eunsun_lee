@@ -1,0 +1,13 @@
+import sys
+import copy
+
+sys.setrecursionlimit(int(1e6))
+input = sys.stdin.readline
+
+n = int(input())
+
+for i in range(n) :
+    if i % 2 ==0 :
+        print("* " * n)
+    else :
+        print(" *" * n)
